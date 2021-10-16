@@ -9,3 +9,7 @@ const port = "8080";
 app.get("/", (req, res) => {
     res.status(200).send("Hey");
 });
+
+app.listen(port, () => {
+    console.log(`Listening in port ${port}`);
+});

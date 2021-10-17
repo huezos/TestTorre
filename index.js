@@ -11,7 +11,7 @@ const pool = mysql.createPool({
     user: "",
     database: "",
     host: "",
-    port: 2
+    port: 3
 }); 
 
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -50,15 +50,21 @@ app.post("/saveOpportunity", async (req, res) => {
     });
 });
 
+app.post("/saveOpportunityVisit", (req, res) => {
+    const body = req.body;
+    const email = body.email;
+    const opportunity = body.opportunity;
+    saveEmailVisitOpportunity(email, opportunity);
+    res.send({
+        status: "OK",
+    });
+})
+
 app.post("/deleteOpportunity", (req, res) => {
     const body = req.body;
-    const key = "/" + body.email;
+    const email = body.email;
     const opportunity = body.opportunity;
-    var opportunities = db.get(key) || {};
-    if(opportunities[opportunity] !== undefined){
-        delete opportunities[opportunity];
-    }
-    db.set(key, opportunities);
+    removeRealtionshipEmailOpportunity(email, opportunity);
     res.send({
         status: "OK",
     });
@@ -125,6 +131,51 @@ function searchExistsEmailOpportunity(email, opportunity){
                 throw error;
             }
             resolve(results);
+        }); 
+    });
+}
+
+/**
+ * Function to get of alredy exists the relations between 
+ * email and opportunity
+ * @param string email 
+ * @param string opportunity 
+ */
+ function removeRealtionshipEmailOpportunity(email, opportunity){
+    return new Promise((resolve, reject) => {
+        pool.query(`UPDATE ebdb.EmailFollowOpportunity 
+            SET active = 0,
+                dateRemoved = CURRENT_TIMESTAMP
+            WHERE email = ? 
+                AND opportunity = ?
+                AND active = 1 
+        `, [email, opportunity], 
+        function(error, results, fields){
+            if (error){
+                reject(error);
+                throw error;
+            }
+            resolve(true);
+        }); 
+    });
+}
+
+/**
+ * Function to insert that email visit the opportunity
+ * @param string email 
+ * @param string opportunity 
+ */
+ function saveEmailVisitOpportunity(email, opportunity){
+    return new Promise((resolve, reject) => {
+        pool.query(`INSERT ebdb.EmailVisitedOpportunity(email, opportunity)
+            VALUES (?, ?)
+        `, [email, opportunity], 
+        function(error, results, fields){
+            if (error){
+                reject(error);
+                throw error;
+            }
+            resolve(true);
         }); 
     });
 }

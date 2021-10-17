@@ -28,6 +28,12 @@ new Vue({
                 elementVue.objective = data.objective;
                 elementVue.loading = false;
             });
+        axios.post("/saveOpportunityVisit", {
+                email: this.email,
+                opportunity: this.opportunity,
+            }).then(function(response){
+                
+            });
     },
     methods: {
         /**

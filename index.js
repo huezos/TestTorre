@@ -1,12 +1,10 @@
-const { application } = require("express");
 const express = require("express");
 const path = require("path");
 const bodyParser = require('body-parser')
 const JSONdb = require('simple-json-db');
-const { appendFile } = require("fs");
 const db = new JSONdb('database.json');
 const app = express();
-const port = "8080";
+const port = "80";
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())

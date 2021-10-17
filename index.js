@@ -1,10 +1,17 @@
 const express = require("express");
 const path = require("path");
-const bodyParser = require('body-parser')
-const JSONdb = require('simple-json-db');
-const db = new JSONdb('database.json');
+const bodyParser = require('body-parser');
 const app = express();
 const port = "3000";
+const mysql = require('mysql');
+
+const connection = mysql.createConnection({
+  host     : "",
+  user     : "",
+  password : "",
+  port     : ""
+});
+
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
@@ -33,17 +40,27 @@ app.post("/opportunity", (req, res) => {
 
 app.post("/saveOpportunity", (req, res) => {
     const body = req.body;
-    const key = "/" + body.email;
+    const email = body.email;
     const opportunity = body.opportunity;
     const objective = body.objectiveOpportunity;
-    var opportunities = db.get(key) || {};
-    if(opportunities[opportunity] === undefined){
-        opportunities[opportunity] = {
-            id: opportunity,
-            name: objective,
-        };
-    }
-    db.set(key, opportunities);
+    connection.query('SELECT id FROM ebdb.Email WHERE email = ?', [email], 
+        function (error, results, fields) {
+            if (error){
+                throw error;
+            }
+            if(results.length == 0){
+                connection.query("INSERT INTO ebdb.Email(email) VALUES(?)", [email], 
+                    function(error, results, fields){
+                        if (error){
+                            throw error;
+                        }
+                        linkEmailOpportunity(results.insertId, opportunity, objective);    
+                    });
+            }
+            else{
+                linkEmailOpportunity(results[0].id, opportunity, objective);
+            }
+    });
     res.send({
         status: "OK",
     });
@@ -82,3 +99,24 @@ app.post("/opportunitiesSaved", (req, res) => {
 app.listen(port, () => {
     console.log(`Listening in port ${port}`);
 });
+
+/**
+ * Functions
+ */
+
+/**
+ * Function to save the realtionship email - opportunity
+ * @param int idEmail 
+ * @param string opportunity 
+ * @param string objective 
+ */
+function linkEmailOpportunity(idEmail, opportunity, objective){
+    connection.query(`INSERT INTO ebdb.EmailFollowOpportunity(fkIdEmail, 
+        fkIdOpportunity, objective) VALUES (?, ?, ?)
+    `, [idEmail, opportunity, objective], 
+    function(error, results, fields){
+        if (error){
+            throw error;
+        }
+    });
+}

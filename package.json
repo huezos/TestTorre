@@ -22,6 +22,7 @@
     "express": "^4.17.1",
     "nodemon": "^2.0.13",
     "pug": "^3.0.2",
-    "simple-json-db": "^1.2.3"
+    "simple-json-db": "^1.2.3",
+    "mysql": "latest"
   }
 }

@@ -23,6 +23,9 @@ html
                         select(v-model="size" @change="searchOpportunities()")
                             option(v-for="sizeOption in sizes") 
                                 | {{ sizeOption }}
+                    .col 
+                        | Search 
+                        input(v-model="textSearch")
                     .col-12
                         .table-responsive
                             table.table.table-striped 
@@ -35,7 +38,7 @@ html
                                         th 
                                             | Type 
                                 tbody 
-                                    tr(v-for="opportunity in opportunities")
+                                    tr(v-for="opportunity in opportunitiesFiltered")
                                         td 
                                             | {{ opportunity["objective"] }}
                                         td 

@@ -8,6 +8,19 @@ new Vue({
         sizes: [10, 20, 50, 100],
         textSearch: "",
     },
+    computed: {
+        opportunitiesFiltered: function(){
+            var opportunities = this.opportunities;
+            var textSearch = this.textSearch.toUpperCase();
+            if(textSearch != ""){
+                opportunities = opportunities.filter(function(opportunity){
+                    return opportunity["objective"].toUpperCase().includes(textSearch) || 
+                        (opportunity["tagline"] || "").toUpperCase().includes(textSearch);
+                });
+            }
+            return opportunities;
+        },
+    },
     mounted: function(){
         this.searchOpportunities();
     },

@@ -8,7 +8,8 @@ html
         link(type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css")
     body
         #app.container-fluid
-            .row 
+            input(ref="id" type="hidden" value="" + opportunity)
+            .row
                 .col.bg-primary.text-white.text-center 
                     h1 
                         | Opportunity details
@@ -18,6 +19,27 @@ html
                         .col.text-center.p-2
                             b-spinner(variant="primary" label="Spinning")
                 template(v-else)
+                    .row 
+                        .col-12.text-center 
+                            img(:src="owner['pictureThumbnail']")
+                        .col-12 
+                            .table-responsive
+                                table.table.table-sm 
+                                    tbody 
+                                        tr.bg-success.text-white
+                                            td.text-center(colspan="2")
+                                                strong
+                                                    | Owner
+                                        tr
+                                            td 
+                                                | Name
+                                            td 
+                                                | {{ owner["name"] }}
+                                        tr
+                                            td 
+                                                | Headline
+                                            td 
+                                                | {{ owner["professionalHeadline"] }}
         script(src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous")
         script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous")
         script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous")

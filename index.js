@@ -1,8 +1,12 @@
 const { application } = require("express");
 const express = require("express");
 const path = require("path");
+const bodyParser = require('body-parser')
 const app = express();
 const port = "8080";
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
@@ -18,9 +22,10 @@ app.get("/", (req, res) => {
 });
 
 app.post("/opportunity", (req, res) => {
+    console.log(req.body.opportunity);
     res.render("opportunityDetails", {
         title: "Opportunity details",
-        opportunity: req,
+        opportunity: req.body.opportunity,
     });
 })
 

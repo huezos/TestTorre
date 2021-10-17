@@ -4,6 +4,7 @@ new Vue({
         loading: true,
         opportunities: [],
         email: "",
+        visited: [],
     },
     mounted: function(){
         var elementVue = this;
@@ -16,6 +17,7 @@ new Vue({
             .then(function(response){
                 var data = response.data;
                 elementVue.opportunities = data.opportunities;
+                elementVue.visited = data.visited;
                 elementVue.loading = false;
             });
     },
@@ -32,7 +34,7 @@ new Vue({
             form.action = "opportunity";
             form.method = "POST";
             inputOportunity.name = "opportunity";
-            inputOportunity.value = opportunity["id"];
+            inputOportunity.value = opportunity["opportunity"];
             inputEmail.name = "email";
             inputEmail.value = this.email;
             form.appendChild(inputOportunity);

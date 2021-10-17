@@ -26,13 +26,13 @@ new Vue({
                 elementVue.languages = data.languages;
                 elementVue.details = data.details;
                 elementVue.objective = data.objective;
-                elementVue.loading = false;
-            });
-        axios.post("/saveOpportunityVisit", {
-                email: this.email,
-                opportunity: this.opportunity,
-            }).then(function(response){
-                
+                axios.post("/saveOpportunityVisit", {
+                    email: elementVue.email,
+                    opportunity: elementVue.opportunity,
+                    objective:  elementVue.objective,
+                }).then(function(response){
+                    elementVue.loading = false;
+                });
             });
     },
     methods: {

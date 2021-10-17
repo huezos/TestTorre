@@ -21,6 +21,9 @@ html
                     .col-12 
                         | Your email: 
                         input(v-model="email")
+                        =" "
+                        button.btn.btn-success(@click="openSaved()")
+                            | Check saved
                     .col 
                         select(v-model="size" @change="searchOpportunities()")
                             option(v-for="sizeOption in sizes") 

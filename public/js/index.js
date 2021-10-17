@@ -76,5 +76,21 @@ new Vue({
             form.submit();
             document.body.removeChild(form);
         },
+        /**
+         * Function to open the saved relationships with the email
+         */
+        openSaved: function(){
+            var form = document.createElement("form");
+            var inputEmail = document.createElement("input");
+            form.target = "_blank";
+            form.action = "saved";
+            form.method = "POST";
+            inputEmail.name = "email";
+            inputEmail.value = this.email;
+            form.appendChild(inputEmail);
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+        },
     },
 });

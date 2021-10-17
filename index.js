@@ -49,6 +49,22 @@ app.post("/saveOpportunity", (req, res) => {
     res.send({
         status: "OK",
     });
+});
+
+app.post("/saved", (req, res) => {
+    const body = req.body;
+    res.render("saved", {
+        title: "Opportunities saved",
+        email: body.email,
+    });
+});
+
+app.post("/opportunitiesSaved", (req, res) => {
+    const body = req.body;
+    res.send({
+        status: "OK",
+        email: db.get("/" + body.email) || {},
+    });
 })
 
 app.listen(port, () => {

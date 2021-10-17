@@ -15,7 +15,8 @@ new Vue({
             if(textSearch != ""){
                 opportunities = opportunities.filter(function(opportunity){
                     return opportunity["objective"].toUpperCase().includes(textSearch) || 
-                        (opportunity["tagline"] || "").toUpperCase().includes(textSearch);
+                        (opportunity["tagline"] || "").toUpperCase().includes(textSearch) || 
+                        (opportunity["status"] || "").toUpperCase().includes(textSearch);
                 });
             }
             return opportunities;
@@ -45,6 +46,30 @@ new Vue({
             this.total = data.total;
             this.opportunities = data.results;
             this.loading = false;
+        },
+        /**
+         * Function to show or hide details from an opportunity
+         * @param object opportunity 
+         */
+        showHideDetails: function(opportunity){
+            Vue.set(opportunity, "displayDetails", !opportunity['displayDetails']);
+        },
+        /**
+         * Function to open all details from an opportunity
+         * @param object opportunity
+         */
+        openOpportunity: function(opportunity){
+            var form = document.createElement("form");
+            var inputOportunity = document.createElement("input");
+            form.target = "_blank";
+            form.action = "opportunity";
+            form.method = "POST";
+            inputOportunity.name = "opportunity";
+            inputOportunity.value = opportunity["id"];
+            form.appendChild(inputOportunity);
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
         },
     },
 });

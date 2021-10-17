@@ -1,3 +1,4 @@
+const { application } = require("express");
 const express = require("express");
 const path = require("path");
 const app = express();
@@ -15,6 +16,13 @@ app.get("/", (req, res) => {
         title: "Torre test",
     });
 });
+
+app.post("/opportunity", (req, res) => {
+    res.render("opportunityDetails", {
+        title: "Opportunity details",
+        opportunity: req,
+    });
+})
 
 app.listen(port, () => {
     console.log(`Listening in port ${port}`);

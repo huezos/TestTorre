@@ -22,11 +22,15 @@ html
                 template(v-else)
                     .row 
                         .col-12 
-                            | Save opportunity
+                            | Email:
                             input(v-model="email")
+                            =" "
                             button.btn.btn-primary(@click="saveRelationship()")
                                 | Save
-                        .col-12.text-center 
+                            =" "
+                            button.btn.btn-danger(@click="deleteRelationship()")
+                                | Delete
+                        .col-12.text-center.p-2 
                             img(:src="owner['pictureThumbnail']")
                         .col-12 
                             .table-responsive

@@ -15,24 +15,31 @@ new Vue({
             })
             .then(function(response){
                 var data = response.data;
-                
+                elementVue.opportunities = data.opportunities;
                 elementVue.loading = false;
             });
     },
     methods: {
         /**
-         * Function to save the relation between opportunity and email
+         * Function to open details from the opportunity
+         * @param object opportunity
          */
-        saveRelationship: function(){
-            var elementVue = this;
-            this.loading = true;
-            axios.post("/saveOpportunity", {
-                    email: this.email,
-                    opportunity: this.opportunity,
-                    objectiveOpportunity:  this.objective,
-                }).then(function(response){
-                    elementVue.loading = false;
-                });
+         openOpportunity: function(opportunity){
+            var form = document.createElement("form");
+            var inputOportunity = document.createElement("input");
+            var inputEmail = document.createElement("input");
+            form.target = "_blank";
+            form.action = "opportunity";
+            form.method = "POST";
+            inputOportunity.name = "opportunity";
+            inputOportunity.value = opportunity["id"];
+            inputEmail.name = "email";
+            inputEmail.value = this.email;
+            form.appendChild(inputOportunity);
+            form.appendChild(inputEmail);
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
         },
     },
 });

@@ -51,6 +51,20 @@ app.post("/saveOpportunity", (req, res) => {
     });
 });
 
+app.post("/deleteOpportunity", (req, res) => {
+    const body = req.body;
+    const key = "/" + body.email;
+    const opportunity = body.opportunity;
+    var opportunities = db.get(key) || {};
+    if(opportunities[opportunity] !== undefined){
+        delete opportunities[opportunity];
+    }
+    db.set(key, opportunities);
+    res.send({
+        status: "OK",
+    });
+});
+
 app.post("/saved", (req, res) => {
     const body = req.body;
     res.render("saved", {
@@ -63,7 +77,7 @@ app.post("/opportunitiesSaved", (req, res) => {
     const body = req.body;
     res.send({
         status: "OK",
-        email: db.get("/" + body.email) || {},
+        opportunities: db.get("/" + body.email) || {},
     });
 })
 

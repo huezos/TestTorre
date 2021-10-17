@@ -44,5 +44,18 @@ new Vue({
                     elementVue.loading = false;
                 });
         },
+        /**
+         * Function to delete the relation between opportunity and email
+         */
+        deleteRelationship: function(){
+            var elementVue = this;
+            this.loading = true;
+            axios.post("/deleteOpportunity", {
+                    email: this.email,
+                    opportunity: this.opportunity,
+                }).then(function(response){
+                    elementVue.loading = false;
+                });
+        },
     },
 });

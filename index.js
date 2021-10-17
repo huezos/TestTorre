@@ -5,13 +5,14 @@ const app = express();
 const port = "3000";
 const mysql = require('mysql');
 
-const connection = mysql.createConnection({
-  host     : "",
-  user     : "",
-  password : "",
-  port     : ""
-});
-
+const pool = mysql.createPool({
+    connectionLimit: 10,    
+    password: "",
+    user: "",
+    database: "",
+    host: "",
+    port: 2
+}); 
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
@@ -38,29 +39,12 @@ app.post("/opportunity", (req, res) => {
     });
 })
 
-app.post("/saveOpportunity", (req, res) => {
+app.post("/saveOpportunity", async (req, res) => {
     const body = req.body;
     const email = body.email;
     const opportunity = body.opportunity;
     const objective = body.objectiveOpportunity;
-    connection.query('SELECT id FROM ebdb.Email WHERE email = ?', [email], 
-        function (error, results, fields) {
-            if (error){
-                throw error;
-            }
-            if(results.length == 0){
-                connection.query("INSERT INTO ebdb.Email(email) VALUES(?)", [email], 
-                    function(error, results, fields){
-                        if (error){
-                            throw error;
-                        }
-                        linkEmailOpportunity(results.insertId, opportunity, objective);    
-                    });
-            }
-            else{
-                linkEmailOpportunity(results[0].id, opportunity, objective);
-            }
-    });
+    linkEmailOpportunity(email, opportunity, objective);
     res.send({
         status: "OK",
     });
@@ -100,23 +84,47 @@ app.listen(port, () => {
     console.log(`Listening in port ${port}`);
 });
 
-/**
- * Functions
- */
 
 /**
  * Function to save the realtionship email - opportunity
- * @param int idEmail 
+ * @param string email
  * @param string opportunity 
  * @param string objective 
  */
-function linkEmailOpportunity(idEmail, opportunity, objective){
-    connection.query(`INSERT INTO ebdb.EmailFollowOpportunity(fkIdEmail, 
-        fkIdOpportunity, objective) VALUES (?, ?, ?)
-    `, [idEmail, opportunity, objective], 
-    function(error, results, fields){
-        if (error){
-            throw error;
-        }
+async function linkEmailOpportunity(email, opportunity, objective){
+    var relations = await searchExistsEmailOpportunity(email, opportunity);
+    if(relations.length == 0){
+        pool.query(`INSERT INTO ebdb.EmailFollowOpportunity(email, 
+            opportunity, objective) VALUES (?, ?, ?)
+        `, [email, opportunity, objective], 
+        function(error, results, fields){
+            if (error){
+                throw error;
+            }
+        });
+    }
+}
+
+/**
+ * Function to get of alredy exists the relations between 
+ * email and opportunity
+ * @param string email 
+ * @param string opportunity 
+ * @returns 
+ */
+function searchExistsEmailOpportunity(email, opportunity){
+    return new Promise((resolve, reject) => {
+        pool.query(`SELECT 1 FROM ebdb.EmailFollowOpportunity
+            WHERE email = ? 
+                AND opportunity = ?
+                AND active = 1 
+        `, [email, opportunity], 
+        function(error, results, fields){
+            if (error){
+                reject(error);
+                throw error;
+            }
+            resolve(results);
+        }); 
     });
 }

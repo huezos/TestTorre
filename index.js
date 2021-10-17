@@ -2,6 +2,9 @@ const { application } = require("express");
 const express = require("express");
 const path = require("path");
 const bodyParser = require('body-parser')
+const JSONdb = require('simple-json-db');
+const { appendFile } = require("fs");
+const db = new JSONdb('database.json');
 const app = express();
 const port = "8080";
 
@@ -22,10 +25,29 @@ app.get("/", (req, res) => {
 });
 
 app.post("/opportunity", (req, res) => {
-    console.log(req.body.opportunity);
+    const body = req.body;
     res.render("opportunityDetails", {
         title: "Opportunity details",
-        opportunity: req.body.opportunity,
+        opportunity: body.opportunity,
+        email: body.email,
+    });
+})
+
+app.post("/saveOpportunity", (req, res) => {
+    const body = req.body;
+    const key = "/" + body.email;
+    const opportunity = body.opportunity;
+    const objective = body.objectiveOpportunity;
+    var opportunities = db.get(key) || {};
+    if(opportunities[opportunity] === undefined){
+        opportunities[opportunity] = {
+            id: opportunity,
+            name: objective,
+        };
+    }
+    db.set(key, opportunities);
+    res.send({
+        status: "OK",
     });
 })
 

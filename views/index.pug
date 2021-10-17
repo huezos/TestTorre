@@ -18,6 +18,9 @@ html
                         .col.text-center.p-2
                             b-spinner(variant="primary" label="Spinning")
                 template(v-else)
+                    .col-12 
+                        | Your email: 
+                        input(v-model="email")
                     .col 
                         select(v-model="size" @change="searchOpportunities()")
                             option(v-for="sizeOption in sizes") 

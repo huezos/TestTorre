@@ -9,6 +9,7 @@ html
     body
         #app.container-fluid
             input(ref="id" type="hidden" value="" + opportunity)
+            input(ref="email" type="hidden" value="" + email)
             .row
                 .col.bg-primary.text-white.text-center 
                     h1 
@@ -20,6 +21,11 @@ html
                             b-spinner(variant="primary" label="Spinning")
                 template(v-else)
                     .row 
+                        .col-12 
+                            | Save opportunity
+                            input(v-model="email")
+                            button.btn.btn-primary(@click="saveRelationship()")
+                                | Save
                         .col-12.text-center 
                             img(:src="owner['pictureThumbnail']")
                         .col-12 
